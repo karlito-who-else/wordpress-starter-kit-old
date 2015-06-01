@@ -1,0 +1,69 @@
+{
+  "name": "wednesday/wordpress-starter-kit",
+  "description": "WordPress starter kit",
+  "authors": [
+    {
+      "name": "Wednesday",
+      "email": "admin@wednesdayagency.com",
+      "homepage": "http://wednesdayagency.com"
+    }
+  ],
+  "type": "project",
+  "license": "proprietary",
+  "repositories": [{
+    "type": "composer",
+    "url": "http://wpackagist.org"
+  }, {
+    "type": "package",
+    "package": {
+      "name": "automattic/_s",
+      "version": "dev-master",
+      "type": "wordpress-theme",
+      "source": {
+        "url": "https://github.com/automattic/_s",
+        "type": "git",
+        "reference": "origin/master"
+      }
+    }
+  }],
+  "config": {
+    "vendor-dir": "www/wp-content/vendor",
+    "minimum-stability": "dev"
+  },
+  "extra": {
+    "wordpress-install-dir": "www",
+    "installer-paths": {
+      "www/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
+      "www/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "bash configuration/composer/post-install.sh"
+    ],
+    "post-update-cmd": [
+      "bash configuration/composer/post-update.sh"
+    ]
+  },
+  "require": {
+    "php": ">=5.5",
+    "johnpbloch/wordpress": "dev-master",
+    "aws/aws-sdk-php": "*",
+    "fancyguy/wordpress-monolog": "dev-master",
+    "wpackagist-plugin/advanced-custom-fields": "*",
+    "wpackagist-plugin/akismet": "*",
+    "wpackagist-plugin/posts-to-posts": "*"
+  },
+  "require-dev" : {
+    "automattic/_s": "dev-master",
+    "wpackagist-plugin/a-fresher-cache": "*",
+    "wpackagist-plugin/core-control": "*",
+    "wpackagist-plugin/debug-bar": "*",
+    "wpackagist-plugin/debug-bar-console": "*",
+    "wpackagist-plugin/monster-widget": "*",
+    "wpackagist-plugin/theme-check": "*",
+    "wpackagist-plugin/user-switching": "*",
+    "wpackagist-plugin/wcm-user-language-switcher": "*",
+    "wpackagist-theme/hueman": "*"
+  }
+}
