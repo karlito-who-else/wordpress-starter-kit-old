@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# ( wp-install shell-user folder db-name db-user-name db-user-pw )
-
 dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 cd $dir/../..
@@ -30,3 +28,5 @@ chmod -R g-w www/wp-admin www/wp-includes www/wp-content/plugins
 chmod g+w www/.htaccess
 
 cp -rp www/wp-content/themes/_s www/wp-content/themes/wordpress-starter-kit
+
+mkdir -p www/wp-content/themes/wordpress-starter-kit/styleguide/templates && cp -r node_modules/gulp-dss/templates www/wp-content/themes/wordpress-starter-kit/styleguide

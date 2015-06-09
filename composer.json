@@ -1,13 +1,11 @@
 {
   "name": "wednesday/wordpress-starter-kit",
   "description": "WordPress starter kit",
-  "authors": [
-    {
-      "name": "Wednesday",
-      "email": "admin@wednesdayagency.com",
-      "homepage": "http://wednesdayagency.com"
-    }
-  ],
+  "authors": [{
+    "name": "Wednesday",
+    "email": "admin@wednesdayagency.com",
+    "homepage": "http://wednesdayagency.com"
+  }],
   "type": "project",
   "license": "proprietary",
   "repositories": [{
@@ -27,7 +25,7 @@
     }
   }],
   "config": {
-    "vendor-dir": "www/wp-content/vendor",
+    "vendor-dir": "www/vendor",
     "minimum-stability": "dev"
   },
   "extra": {
@@ -46,15 +44,17 @@
     ]
   },
   "require": {
-    "php": ">=5.5",
+    "php": ">=5.6",
     "johnpbloch/wordpress": "dev-master",
     "aws/aws-sdk-php": "*",
     "fancyguy/wordpress-monolog": "dev-master",
     "wpackagist-plugin/advanced-custom-fields": "*",
     "wpackagist-plugin/akismet": "*",
-    "wpackagist-plugin/posts-to-posts": "*"
+    "wpackagist-plugin/better-wp-security": "*",
+    "wpackagist-plugin/posts-to-posts": "*",
+    "wpackagist-plugin/wp-migrate-db": "*"
   },
-  "require-dev" : {
+  "require-dev": {
     "automattic/_s": "dev-master",
     "wpackagist-plugin/a-fresher-cache": "*",
     "wpackagist-plugin/core-control": "*",

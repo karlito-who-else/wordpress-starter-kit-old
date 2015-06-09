@@ -1,0 +1,18 @@
+composer:
+  build: ./composer
+db:
+  image: mysql:latest
+  environment:
+    MYSQL_ROOT_PASSWORD: wordpress-starter-kit-123
+npm:
+  build: ./npm
+wordpress:
+  image: wordpress:latest
+  ports:
+    - "80:80"
+  links:
+    - db:mysql
+    - composer
+    - npm
+  volumes:
+    - ./www:/var/www/html
