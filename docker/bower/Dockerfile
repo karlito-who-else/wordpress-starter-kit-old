@@ -2,6 +2,6 @@ FROM node:latest
 
 MAINTAINER Wednesday <admin@wednesdayagency.com>
 
-RUN npm install
+RUN npm install -g bower
 
-ENTRYPOINT ["npm"]
+ENTRYPOINT ["bower"]

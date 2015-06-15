@@ -83,5 +83,15 @@
   },
   "engines": {
     "node": ">=0.12.4"
+  },
+  "config": {
+    "server": {
+      "http": {
+        "port": 80
+      },
+      "browsersync": {
+        "port": 4567
+      }
+    }
   }
 }

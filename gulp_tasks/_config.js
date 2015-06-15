@@ -13,10 +13,6 @@ config.port = {};
 
 config.theme = 'wordpress-starter-kit';
 
-// Ports
-config.port.http = process.env.PORT ? process.env.PORT : manifest.config.server.http.port;
-config.port.browsersync = manifest.config.server.browsersync.port;
-
 // Paths
 config.path.root = path.normalize(__dirname + '/../www');
 config.path.nodeModules = path.normalize(__dirname + '/../node_modules');
@@ -42,8 +38,8 @@ config.browsersync.files = [
 
 config.browsersync.browser = ['google chrome'];
 config.browsersync.open = false
-config.browsersync.port = config.port.browsersync;
-config.browsersync.proxy = 'http://localhost:' + config.port.http;
+config.browsersync.port = manifest.config.server.browsersync.port;
+config.browsersync.proxy = 'http://localhost:' + process.env.PORT ? process.env.PORT : manifest.config.server.http.port;
 // config.browsersync.tunnel = true;
 
 module.exports = config;

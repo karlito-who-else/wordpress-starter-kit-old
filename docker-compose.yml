@@ -1,11 +1,13 @@
+bower:
+  build: ./docker/bower
 composer:
-  build: ./docker/composer
+  image: composer/composer
 db:
   image: mariadb
   environment:
     MYSQL_ROOT_PASSWORD: wordpress-starter-kit-123
-nodejsbowergulp:
-  image: nodejs-bower-gulp
+gulp:
+  build: ./docker/gulp
 wordpress:
   image: wordpress:latest
   ports:
@@ -13,6 +15,7 @@ wordpress:
   links:
     - db:mysql
     - composer
-    - nodejsbowergulp
+    - bower
+    - gulp
   volumes:
     - ./www:/var/www/html

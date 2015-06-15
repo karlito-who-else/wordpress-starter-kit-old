@@ -1,6 +1,8 @@
 FROM php:5.6-cli
 
-MAINTAINER Wednesday
+MAINTAINER Wednesday <admin@wednesdayagency.com>
+
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN locale-gen en_GB.UTF-8
 
@@ -22,4 +24,11 @@ RUN php -r "readfile('https://getcomposer.org/installer');" | php
 
 RUN mv composer.phar /usr/bin/composer
 
-RUN composer install .
+RUN php --version
+RUN composer --version
+
+#RUN composer install .
+
+# Set up the command arguments
+CMD ["-"]
+ENTRYPOINT ["composer", "--ansi"]

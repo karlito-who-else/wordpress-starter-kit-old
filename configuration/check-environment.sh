@@ -49,10 +49,16 @@ if [ -f Gemfile ]; then
     if hash gem 2>/dev/null; then
       gem update --system
       gem install bundler
+    else
+      echo "gem not installed"
+      exit
     fi
 
     if hash bundle 2>/dev/null; then
       bundle install
+    else
+      echo "bundle not installed"
+      exit
     fi
 
   else
