@@ -1,11 +1,11 @@
 composer:
-  build: ./composer
+  build: ./docker/composer
 db:
-  image: mysql:latest
+  image: mariadb
   environment:
     MYSQL_ROOT_PASSWORD: wordpress-starter-kit-123
-npm:
-  build: ./npm
+nodejsbowergulp:
+  image: nodejs-bower-gulp
 wordpress:
   image: wordpress:latest
   ports:
@@ -13,6 +13,6 @@ wordpress:
   links:
     - db:mysql
     - composer
-    - npm
+    - nodejsbowergulp
   volumes:
     - ./www:/var/www/html
