@@ -2,7 +2,7 @@
 	"name": "wordpress-starter-kit",
 	"description": "Wordpress starter kit",
 	"version": "0.1.0",
-	"homepage": "http://code.wednesdayagency.com/wordpress/wordpress-starter-kit",
+	"homepage": "http://code.wednesdayagency.com/wordpress-starter-kit",
 	"author": {
 		"name": "Wednesday",
 		"email": "admin@wednesdayagency.com",
@@ -10,18 +10,16 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wednesdaylondon/wordpress-starter-kit"
+		"url": "https://github.com/wednesdayagency/wordpress-starter-kit"
 	},
 	"bugs": {
-		"url": "https://github.com/wednesdaylondon/wordpress-starter-kit/issues"
+		"url": "https://github.com/wednesdayagency/wordpress-starter-kit/issues"
 	},
 	"dependencies": {
 		"detectizr": "^2.0.0",
-		"imagesloaded": "^3.1.8",
-		"jquery-cycle2": "^2.1.5"
+		"imagesloaded": "^3.1.8"
 	},
 	"devDependencies": {
-		"bootstrap-sass": "^3.3.4",
-		"font-awesome": "^4.1.0"
+    "bootstrap": "twbs/bootstrap#v4-dev"
 	}
 }

@@ -4,6 +4,7 @@
 *.out
 *.pid
 .DS_STORE
+.DS_Store
 .sass-cache
 .tmp
 logs/*
