@@ -1,7 +1,7 @@
 bower:
   build: ./docker/bower
 composer:
-  image: composer/composer
+  image: composer/composer:latest
 db:
   image: mariadb
   environment:

@@ -1,3 +1,3 @@
-FROM ubuntu:utopic
+FROM ubuntu:latest
 
 MAINTAINER Wednesday
