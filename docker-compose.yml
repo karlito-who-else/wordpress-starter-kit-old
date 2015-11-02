@@ -3,19 +3,22 @@ bower:
 composer:
   image: composer/composer:latest
 db:
-  image: mariadb
+  image: mariadb:latest
   environment:
+    #MYSQL_DATABASE: wordpress
     MYSQL_ROOT_PASSWORD: wordpress-starter-kit-123
+    MYSQL_USER: wordpress
+    MYSQL_PASSWORD: m1ttw0ch13
 gulp:
   build: ./docker/gulp
 wordpress:
   image: wordpress:latest
-  ports:
-    - "80:80"
   links:
-    - db:mysql
-    - composer
     - bower
+    - composer
+    - db:mysql
     - gulp
+  ports:
+    - 8080:80
   volumes:
-    - ./www:/var/www/html
+    - ./wordpress/wp-content/:/Users/karl/Sites/wordpress-starter-kit/www/wp-content
