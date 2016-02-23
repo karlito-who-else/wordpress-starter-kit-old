@@ -36,23 +36,41 @@
     }
   },
   "scripts": {
+    "pre-install-cmd": [
+      "bash scripts/composer/pre-install.sh"
+    ],
+    "pre-update-cmd": [
+      "bash scripts/composer/pre-update.sh"
+    ],
     "post-install-cmd": [
-      "bash configuration/composer/post-install.sh"
+      "bash scripts/composer/post-install.sh"
     ],
     "post-update-cmd": [
-      "bash configuration/composer/post-update.sh"
+      "bash scripts/composer/post-update.sh"
     ]
   },
   "require": {
     "php": ">=5.6",
-    "johnpbloch/wordpress": "dev-master",
     "aws/aws-sdk-php": "*",
     "fancyguy/wordpress-monolog": "dev-master",
     "wpackagist-plugin/advanced-custom-fields": "*",
     "wpackagist-plugin/akismet": "*",
     "wpackagist-plugin/better-wp-security": "*",
+    "wpackagist-plugin/duplicator": "*",
+    "wpackagist-plugin/enable-media-replace": "*",
+    "wpackagist-plugin/google-analytics-for-wordpress": "*",
+    "wpackagist-plugin/jetpack": "*",
+    "wpackagist-plugin/lazy-load": "*",
+    "wpackagist-plugin/mailgun": "*",
     "wpackagist-plugin/posts-to-posts": "*",
-    "wpackagist-plugin/wp-migrate-db": "*"
+    "wpackagist-plugin/post-types-order": "*",
+    "wpackagist-plugin/regenerate-thumbnails": "*",
+    "wpackagist-plugin/user-switching": "*",
+    "wpackagist-plugin/wcm-user-language-switcher": "*",
+    "wpackagist-plugin/wordpress-seo": "*",
+    "wpackagist-plugin/wp-migrate-db": "*",
+    "wpackagist-plugin/wp-smtp": "*",
+    "wpackagist-plugin/wp-super-cache": "*"
   },
   "require-dev": {
     "automattic/_s": "dev-master",
@@ -62,8 +80,6 @@
     "wpackagist-plugin/debug-bar-console": "*",
     "wpackagist-plugin/monster-widget": "*",
     "wpackagist-plugin/theme-check": "*",
-    "wpackagist-plugin/user-switching": "*",
-    "wpackagist-plugin/wcm-user-language-switcher": "*",
     "wpackagist-theme/hueman": "*"
   }
 }

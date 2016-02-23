@@ -40,6 +40,6 @@ let reportError = function(error) {
 
   // Prevent the 'watch' task from stopping
   this.emit('end');
-}
+};
 
 export default reportError;

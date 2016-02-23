@@ -3,10 +3,12 @@
 *.log
 *.out
 *.pid
-.DS_STORE
 .DS_Store
 .sass-cache
 .tmp
+bower_components/*
+app/bower_components/*
+app/styles/generated/*
 logs/*
 node_modules/*
 npm-debug.log
@@ -14,10 +16,3 @@ pids/*
 scss-lint-report.xml
 uploads/*
 www/*
-www/bower_components/*
-www/vendor/*
-www/wp-content/backup/*
-www/wp-content/cache/*
-www/wp-content/plugins/*
-www/wp-content/upgrade/*
-www/wp-content/uploads/*

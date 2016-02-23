@@ -8,7 +8,7 @@ import rsync from 'gulp-rsync';
 import config from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = [config.path.destination.base + '/**'];
+let sourceFiles = config.files.destination.all;
 
 gulp.task('rsync', () => {
   return gulp.src(sourceFiles, {
@@ -24,7 +24,7 @@ gulp.task('rsync', () => {
     root: config.path.destination.base,
     hostname: '',
     username: '',
-    destination: config.path.deploy,
+    destination: config.path.deploy.base,
     incremental: true,
     exclude: []
   }))

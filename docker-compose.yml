@@ -1,24 +1,75 @@
 bower:
-  build: ./docker/bower
+  build: .
+  dockerfile: Dockerfile.bower
+  env_file:
+    - env-common.env
+  links:
+    - npm
+  volumes_from:
+    - data
 composer:
-  image: composer/composer:latest
+  build: .
+  dockerfile: Dockerfile.composer
+  env_file:
+    - env-common.env
+  volumes_from:
+    - data
+data:
+  build: .
+  env_file:
+    - env-common.env
+  dockerfile: Dockerfile.data
+  volumes:
+    - ./tmp:/tmp
+    - ./www:/var/www/html
 db:
+  env_file:
+    - env-common.env
   image: mariadb:latest
-  environment:
-    #MYSQL_DATABASE: wordpress
-    MYSQL_ROOT_PASSWORD: wordpress-starter-kit-123
-    MYSQL_USER: wordpress
-    MYSQL_PASSWORD: m1ttw0ch13
+  ports:
+    - "3306:3306"
+  volumes_from:
+    - data
 gulp:
-  build: ./docker/gulp
+  build: .
+  dockerfile: Dockerfile.gulp
+  env_file:
+    - env-common.env
+  links:
+    - bower
+    - npm
+  volumes_from:
+    - data
+npm:
+  build: .
+  dockerfile: Dockerfile.npm
+  env_file:
+    - env-common.env
+  volumes_from:
+    - data
 wordpress:
+  env_file:
+    - env-common.env
   image: wordpress:latest
   links:
     - bower
     - composer
     - db:mysql
     - gulp
+    - npm
+    - wordpress-cli
   ports:
     - 8080:80
+  volumes_from:
+    - data
   volumes:
-    - ./wordpress/wp-content/:/Users/karl/Sites/wordpress-starter-kit/www/wp-content
+    - ./uploads:/var/www/html/wp-content/uploads
+  working_dir: /var/www/html
+wordpress-cli:
+  build: .
+  dockerfile: Dockerfile.wordpress-cli
+  env_file:
+    - env-common.env
+  volumes_from:
+    - data
+  working_dir: /var/www/html

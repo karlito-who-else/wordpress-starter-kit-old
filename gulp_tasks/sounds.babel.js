@@ -8,7 +8,7 @@ import plumber from 'gulp-plumber';
 import config from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = config.files.sounds;
+let sourceFiles = config.files.source.sounds;
 
 gulp.task('sounds', () => {
   return gulp.src(sourceFiles)
@@ -35,7 +35,7 @@ gulp.task('sounds', () => {
         // .audioCodec('libmp3lame')
         .audioFrequency(22050)
         .noVideo()
-        .on('end', function() {
+        .on('end', () => {
           console.log('sounds: Processing finished');
         })
         .on('error', reportError);
@@ -45,6 +45,6 @@ gulp.task('sounds', () => {
     .on('error', reportError);
 });
 
-gulp.task('sounds:watch', function() {
+gulp.task('sounds:watch', () => {
   gulp.watch(sourceFiles, ['sounds']);
 });

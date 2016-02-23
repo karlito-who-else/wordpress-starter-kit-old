@@ -4,11 +4,12 @@ import debug from 'gulp-debug';
 import ffmpeg from 'gulp-fluent-ffmpeg';
 import gulp from 'gulp';
 import plumber from 'gulp-plumber';
+import size from 'gulp-size';
 
-import config from './_config.babel.js';
+import {config, browserSync} from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = config.files.videos;
+let sourceFiles = config.files.source.videos;
 
 gulp.task('videos', () => {
   return gulp.src(sourceFiles)
@@ -32,16 +33,17 @@ gulp.task('videos', () => {
         .fps(24)
         .videoBitrate('512k')
         .videoCodec('libx264')
-        .on('end', function() {
+        .on('end', () => {
           console.log('sounds: Processing finished');
         })
         .on('error', reportError);
     }))
     .pipe(plumber.stop())
     .pipe(gulp.dest(config.path.destination.base))
+    .pipe(size({title: 'videos'}))
     .on('error', reportError);
 });
 
-gulp.task('videos:watch', function() {
-  gulp.watch(sourceFiles, ['videos']);
+gulp.task('videos:watch', () => {
+  gulp.watch(sourceFiles, ['videos'], browserSync.reload);
 });

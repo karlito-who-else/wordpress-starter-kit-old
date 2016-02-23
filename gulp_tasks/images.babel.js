@@ -8,11 +8,12 @@ import jpegtran from 'imagemin-jpegtran';
 import optipng from 'imagemin-optipng';
 import plumber from 'gulp-plumber';
 import pngquant from 'imagemin-pngquant';
+import size from 'gulp-size';
 
-import config from './_config.babel.js';
+import {config, browserSync} from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = config.files.images;
+let sourceFiles = config.files.source.images;
 
 gulp.task('images', () => {
   return gulp.src(sourceFiles)
@@ -24,14 +25,23 @@ gulp.task('images', () => {
     }))
     .pipe(imagemin({
       progressive: true,
-      svgoPlugins: [{removeViewBox: false}],
-      use: [pngquant(), jpegtran(), optipng(), gifsicle()]
+      interlaced: true,
+      svgoPlugins: [{
+        removeViewBox: false
+      }],
+      use: [
+        pngquant(),
+        jpegtran(),
+        optipng(),
+        gifsicle()
+      ]
     }))
     .pipe(plumber.stop())
-    .pipe(gulp.dest(config.path.destination.base))
+    .pipe(gulp.dest(config.path.destination.images))
+    .pipe(size({title: 'images'}))
     .on('error', reportError);
 });
 
-gulp.task('images:watch', function() {
-  gulp.watch(sourceFiles, ['images']);
+gulp.task('images:watch', () => {
+  gulp.watch(sourceFiles, ['images'], browserSync.reload);
 });

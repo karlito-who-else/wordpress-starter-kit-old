@@ -3,15 +3,22 @@
 import debug from 'gulp-debug';
 import gulp from 'gulp';
 import plumber from 'gulp-plumber';
+import size from 'gulp-size';
 import svgSprite from 'gulp-svg-sprite';
 
-import config from './_config.babel.js';
+import {config, browserSync} from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = config.files.icons;
+let sourceFiles = config.files.source.icons;
+
+let pathPrefix = config.path.source.images.replace(/^\/|\/$/g, '') + '/';
+
+let separator = '-';
 
 gulp.task('icons', () => {
-  return gulp.src(sourceFiles)
+  return gulp.src(sourceFiles, {
+      base: config.path.source.base
+    })
     .pipe(plumber({
       errorHandler: reportError
     }))
@@ -20,30 +27,52 @@ gulp.task('icons', () => {
     }))
     .pipe(svgSprite({
       shape: {
-        dimension: { // Set maximum dimensions
+        id: {
+          generator: function(name) {
+            let fullPath = config.path.source.base + '/' + name;
+            let id = 'icon-' + fullPath.replace(pathPrefix, '').replace(/\//g, separator);
+            return id;
+          },
+        },
+        dimension: {
           maxWidth: 32,
           maxHeight: 32
         },
-        spacing: { // Add padding
+        spacing: {
           padding: 10
-        },
-        dest: 'out/intermediate-svg' // Keep the intermediate files
+        }
       },
       mode: {
-        view: { // Activate the «view» mode
+        view: {
           bust: false,
+          dest: '.',
+          example: {
+            dest: config.path.destination.documentation + '/example.sprite.view.html'
+          },
           render: {
-            scss: true // Activate Sass output (with default options)
-          }
+            scss: {
+              dest: config.file.source.spritesheetTemporary
+            }
+          },
+          sprite: config.path.destination.images + '/sprite.view.svg'
         },
-        symbol: true // Activate the «symbol» mode
+        symbol: {
+          bust: false,
+          dest: '.',
+          example: {
+            dest: config.path.destination.documentation + '/example.sprite.symbol.html'
+          },
+          sprite: config.path.destination.images + '/sprite.symbol.svg'
+        }
       }
-    }))
+    })
+    .on('error', reportError))
     .pipe(plumber.stop())
-    .pipe(gulp.dest(config.path.destination.icons))
+    .pipe(gulp.dest(config.path.root))
+    .pipe(size({title: 'icons'}))
     .on('error', reportError);
 });
 
-gulp.task('icons:watch', function() {
-  gulp.watch(sourceFiles, ['icons']);
+gulp.task('icons:watch', () => {
+  gulp.watch(sourceFiles, ['icons'], browserSync.reload);
 });

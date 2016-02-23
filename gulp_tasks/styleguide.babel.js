@@ -8,7 +8,7 @@ import plumber from 'gulp-plumber';
 import config from './_config.babel.js';
 import reportError from './_report-error.babel.js';
 
-let sourceFiles = config.files.styles;
+let sourceFiles = config.files.source.styles;
 
 gulp.task('styleguide', () => {
   return gulp.src(sourceFiles)
@@ -27,6 +27,6 @@ gulp.task('styleguide', () => {
     .on('error', reportError);
 });
 
-gulp.task('styleguide:watch', function() {
+gulp.task('styleguide:watch', () => {
   gulp.watch(sourceFiles, ['styleguide']);
 });

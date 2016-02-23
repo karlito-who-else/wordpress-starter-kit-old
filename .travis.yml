@@ -1,13 +1,41 @@
-before_script:
-	- npm install
+# sudo: required
+env:
+  - COMPOSE_VERSION: 1.4.1
+  - DOCKER_EMAIL: admin@wednesdayagency.com
+  - DOCKER_USERNAME: wednesday-admin
+  - DOCKER_PASSWORD: M3rcr3d1
 language: node_js
 node_js:
-	- '0.12'
-notifications:
-	webhooks:
-		urls:
-			- http://webhooks.nodejitsu.com/1/deploy
-		on_success: always
-		on_failure: never
+  - stable
 services:
-	- mongodb
+  - docker
+  # - mongodb
+addons:
+    mariadb: 10.0
+# before_install:
+#  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+ # - chmod +x docker-compose
+ # - sudo mv docker-compose /usr/local/bin
+# before_script:
+#   - npm install
+#   - mongo mydb_test --eval 'db.addUser("travis", "test");'
+script:
+  - docker-compose build
+  - docker-compose run test
+notifications:
+  email:
+    recipients:
+      - admin@wednesdayagency.com
+      - karl@wednesdayagency.com
+    on_success: change
+    on_failure: always
+  slack:
+    on_failure: always
+    on_success: always
+  webhooks:
+    urls:
+      - http://hooks.mydomain.com/travisci
+      - http://hooks.mydomain.com/events
+    on_success: always
+    on_failure: always
+    on_start: always
