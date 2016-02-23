@@ -1,0 +1,28 @@
+path: ../../www
+url: http://callens-clo.com
+user: admin
+
+rewrite structure:
+	permastruct: /%year%/%monthnum%/%postname%
+
+theme activate:
+	theme: callens-clo
+
+core download:
+	force: true
+
+core install:
+	title: Callens & Clo
+	admin_email: admin@wednesdayagency.com
+	admin_user: admin
+	admin_password: 5ki113dCl0
+
+core config:
+	dbhost: aamutfeswdc7nNp66BzG
+	dbname: callens-clo
+	dbuser: root
+	dbpass: M3rcr3d1
+	extra-php: |
+		define('FS_METHOD', 'direct');
+		define('WP_DEBUG', false);
+		define('WP_POST_REVISIONS', 50);
