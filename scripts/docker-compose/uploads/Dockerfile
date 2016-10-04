@@ -1,3 +1,3 @@
 FROM ubuntu:latest
 
-MAINTAINER Wednesday
+MAINTAINER Karl Podger

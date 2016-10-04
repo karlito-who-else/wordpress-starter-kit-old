@@ -16,3 +16,4 @@ pids/*
 scss-lint-report.xml
 uploads/*
 www/*
+/.data

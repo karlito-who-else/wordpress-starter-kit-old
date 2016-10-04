@@ -1,0 +1,21 @@
+FROM composer/composer:latest
+
+MAINTAINER Karl Podger <karl.podger@primeordinal.com>
+
+ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+
+RUN chown -R $SYSTEM_USER:$SYSTEM_USER /composer
+
+USER $SYSTEM_USER
+
+RUN mkdir -p /home/$SYSTEM_USER/app
+
+WORKDIR /home/$SYSTEM_USER/app
+
+COPY composer.json composer.json
+
+COPY composer.lock composer.lock
+
+CMD ["composer", "install", "--quiet"]

@@ -1,6 +1,6 @@
 FROM node:latest
 
-MAINTAINER Wednesday <admin@wednesdayagency.com>
+MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
 RUN npm install -g gulp
 

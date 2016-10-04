@@ -2,18 +2,19 @@
 	"name": "wordpress-starter-kit",
 	"description": "Wordpress starter kit",
 	"version": "0.1.0",
-	"homepage": "http://code.wednesdayagency.com/wordpress-starter-kit",
+	"homepage": "http://code.primeordinal.com/wordpress-starter-kit",
+	"license": "Apache Version 2.0",
 	"author": {
-		"name": "Wednesday",
-		"email": "admin@wednesdayagency.com",
-		"url": "http://wednesdayagency.com"
+		"name": "Karl Podger",
+		"email": "karl.podger@primeordinal.com",
+		"url": "http://www.primeordinal.com"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wednesdayagency/wordpress-starter-kit"
+		"url": "https://github.com/karlito-who-else/wordpress-starter-kit"
 	},
 	"bugs": {
-		"url": "https://github.com/wednesdayagency/wordpress-starter-kit/issues"
+		"url": "https://github.com/karlito-who-else/wordpress-starter-kit/issues"
 	},
 	"dependencies": {
 		"detectizr": "^2.0.0",

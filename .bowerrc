@@ -1,6 +1,5 @@
 {
-  "allow_root": true,
-  "directory": "app/bower_components",
+  "directory": "bower_components",
   "scripts": {
     "preinstall": "./scripts/bower/pre-install.sh",
     "postinstall": "./scripts/bower/post-install.sh",

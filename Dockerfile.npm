@@ -1,0 +1,25 @@
+FROM node:latest
+
+MAINTAINER Karl Podger <karl.podger@primeordinal.com>
+
+ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+RUN chmod +x /usr/local/bin/dumb-init
+
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+
+USER $SYSTEM_USER
+
+RUN mkdir -p /home/$SYSTEM_USER/app/node_modules
+
+WORKDIR /home/$SYSTEM_USER
+
+ADD package.json package.json
+
+RUN npm install --only=production --quiet
+
+RUN cp -a ./node_modules/ ./app/node_modules/
+
+#CMD ["dumb-init", "npm", "install", "--quiet"]

@@ -1,6 +1,6 @@
 FROM php:latest
 
-MAINTAINER Wednesday <admin@wednesdayagency.com>
+MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 

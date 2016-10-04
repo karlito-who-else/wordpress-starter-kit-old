@@ -9,10 +9,7 @@
 .git
 .gitignore
 .tmp
-app
-gulp_tasks
 LICENSE.md
 logs
-node_modules
 npm-debug.log
 pids

@@ -1,13 +1,13 @@
 {
-  "name": "wednesday/wordpress-starter-kit",
+  "name": "Karl Podger/wordpress-starter-kit",
   "description": "WordPress starter kit",
   "authors": [{
-    "name": "Wednesday",
-    "email": "admin@wednesdayagency.com",
-    "homepage": "http://wednesdayagency.com"
+    "name": "Karl Podger",
+    "email": "karl.podger@primeordinal.com",
+    "homepage": "https://www.primeordinal.com"
   }],
   "type": "project",
-  "license": "proprietary",
+  "license": "Apache Version 2.0",
   "repositories": [{
     "type": "composer",
     "url": "http://wpackagist.org"

@@ -1,8 +1,8 @@
 # sudo: required
 env:
   - COMPOSE_VERSION: 1.4.1
-  - DOCKER_EMAIL: admin@wednesdayagency.com
-  - DOCKER_USERNAME: wednesday-admin
+  - DOCKER_EMAIL: karl.podger@primeordinal.com
+  - DOCKER_USERNAME: Karl Podger-admin
   - DOCKER_PASSWORD: M3rcr3d1
 language: node_js
 node_js:
@@ -25,8 +25,8 @@ script:
 notifications:
   email:
     recipients:
-      - admin@wednesdayagency.com
-      - karl@wednesdayagency.com
+      - karl.podger@primeordinal.com
+      - karl@primeordinal.com
     on_success: change
     on_failure: always
   slack:

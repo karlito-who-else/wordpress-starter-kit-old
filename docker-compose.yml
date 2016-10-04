@@ -1,75 +1,130 @@
-bower:
-  build: .
-  dockerfile: Dockerfile.bower
-  env_file:
-    - env-common.env
-  links:
-    - npm
-  volumes_from:
-    - data
-composer:
-  build: .
-  dockerfile: Dockerfile.composer
-  env_file:
-    - env-common.env
-  volumes_from:
-    - data
-data:
-  build: .
-  env_file:
-    - env-common.env
-  dockerfile: Dockerfile.data
-  volumes:
-    - ./tmp:/tmp
-    - ./www:/var/www/html
-db:
-  env_file:
-    - env-common.env
-  image: mariadb:latest
-  ports:
-    - "3306:3306"
-  volumes_from:
-    - data
-gulp:
-  build: .
-  dockerfile: Dockerfile.gulp
-  env_file:
-    - env-common.env
-  links:
-    - bower
-    - npm
-  volumes_from:
-    - data
-npm:
-  build: .
-  dockerfile: Dockerfile.npm
-  env_file:
-    - env-common.env
-  volumes_from:
-    - data
-wordpress:
-  env_file:
-    - env-common.env
-  image: wordpress:latest
-  links:
-    - bower
-    - composer
-    - db:mysql
-    - gulp
-    - npm
-    - wordpress-cli
-  ports:
-    - 8080:80
-  volumes_from:
-    - data
-  volumes:
-    - ./uploads:/var/www/html/wp-content/uploads
-  working_dir: /var/www/html
-wordpress-cli:
-  build: .
-  dockerfile: Dockerfile.wordpress-cli
-  env_file:
-    - env-common.env
-  volumes_from:
-    - data
-  working_dir: /var/www/html
+version: '2'
+services:
+  bower:
+    build:
+      context: .
+      dockerfile: Dockerfile.bower
+    depends_on:
+      - npm
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    links:
+      - npm
+    volumes_from:
+      - npm
+  composer:
+    build:
+      context: .
+      dockerfile: Dockerfile.composer
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    image: composer/composer:latest
+  db:
+    # build:
+      # args:
+        # buildno: 1
+        # password: secret
+      # context: .
+      # dockerfile: Dockerfile.db
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    expose:
+      - "3306"
+    image: mysql:latest
+    networks:
+      - back
+    ports:
+      - "3306:3306"
+    restart: always
+    volumes:
+      - "./.data/db:/var/lib/mysql"
+  gulp:
+    build:
+      context: .
+      dockerfile: Dockerfile.gulp
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    links:
+      - bower
+      - npm
+    volumes_from:
+      - bower
+      - npm
+      - wp-cli
+  npm:
+    build:
+      context: .
+      dockerfile: Dockerfile.npm
+    depends_on:
+      - composer
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+  wordpress:
+    # build:
+      # context: .
+      # dockerfile: Dockerfile.wordpress
+    depends_on:
+      - db
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    image: wordpress:latest
+    links:
+      - bower
+      - composer
+      - db
+      - gulp
+      - npm
+      - wp-cli
+    networks:
+      - back
+      - front
+    ports:
+      - "8888:80"
+    restart: always
+    volumes_from:
+      - bower
+      - composer
+      - gulp
+      - npm
+      - wp-cli
+    volumes:
+      - "./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
+      - "./.data/uploads:/home/wordpress/uploads"
+      # - "./app:/var/www/html"
+    working_dir: /home/wordpress/app
+  wp-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile.wp-cli
+    env_file:
+      - env-common.env
+    environment:
+      SYSTEM_USER: ${SYSTEM_USER}
+    working_dir: /home/wordpress/app
+networks:
+  front:
+    driver: bridge
+    # external: true
+  back:
+    driver: bridge
+volumes:
+  bower-components:
+    driver: local
+  db-data:
+    driver: local
+  npm-modules:
+    driver: local
+  uploads:
+    driver: local

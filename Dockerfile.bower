@@ -1,0 +1,23 @@
+FROM node:latest
+
+MAINTAINER Karl Podger <karl.podger@primeordinal.com>
+
+ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+RUN chmod +x /usr/local/bin/dumb-init
+
+RUN npm install -g bower --quiet
+
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+
+USER $SYSTEM_USER
+
+RUN mkdir -p /home/$SYSTEM_USER/app
+
+WORKDIR /home/$SYSTEM_USER/app
+
+COPY bower.json bower.json
+
+CMD ["dumb-init", "bower", "install", "--quiet"]
