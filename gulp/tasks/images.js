@@ -38,7 +38,8 @@ export function task(done) {
     }))
     .pipe(gulp.dest(config.directory.destination.images))
     .pipe(size({title: namespace}))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

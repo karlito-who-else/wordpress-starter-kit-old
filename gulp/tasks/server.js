@@ -58,7 +58,8 @@ export function task(done) {
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(config.directory.destination.server))
     .pipe(size({title: namespace}))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

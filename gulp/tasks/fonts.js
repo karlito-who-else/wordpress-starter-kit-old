@@ -22,7 +22,8 @@ export function task(done) {
     //   dest: config.directory.destination.fonts
     // }))
     .pipe(gulp.dest(config.directory.destination.fonts))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

@@ -11,5 +11,6 @@
 .tmp
 LICENSE.md
 logs
+node_modules
 npm-debug.log
 pids

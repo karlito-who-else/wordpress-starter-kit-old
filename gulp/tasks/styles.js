@@ -50,7 +50,8 @@ export function task(done) {
   //     title: `${namespace} (copy scss)`
   //   }))
   //   .pipe(gulp.dest(config.directory.destination.styles))
-  //   .on('error', helper.reportError);
+  //   .on('error', helper.reportError)
+  //   .on('end', done);
 
   return gulp.src(sourceFiles, {
       since: gulp.lastRun(namespace)
@@ -114,7 +115,8 @@ export function task(done) {
     .pipe(gulp.dest(config.directory.destination.styles))
     .pipe(browserSync.stream({match: '**/*.css'}))
     .pipe(size({title: namespace}))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

@@ -16,20 +16,21 @@ let sourceFiles = config.files.source.styles;
 
 export function task(done) {
   return gulp.src(sourceFiles, {
-      since: gulp.lastRun(namespace)
-    })
-    .pipe(cache(namespace))
-    .pipe(debug({
-      title: namespace
-    }))
-    .pipe(dss({
-      output: 'index.html',
-      templatePath: config.directory.source.styleguide + '/templates'
-    }))
-    .pipe(gulp.dest(config.directory.destination.styleguide))
-    .pipe(remember(namespace))
-    .pipe(size({title: namespace}))
-    .on('error', helper.reportError);
+    since: gulp.lastRun(namespace)
+  })
+  .pipe(cache(namespace))
+  .pipe(debug({
+    title: namespace
+  }))
+  .pipe(dss({
+    // template: 'node_modules/gulp-dss/templates/default/'
+    template: `${config.directory.source.theme}/styleguide/templates/default/`
+  }))
+  .pipe(remember(namespace))
+  .pipe(gulp.dest(config.directory.destination.styleguide))
+  .pipe(size({title: namespace}))
+  .on('error', helper.reportError)
+  .on('end', done);
 }
 
 export function watch(done) {

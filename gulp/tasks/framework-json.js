@@ -23,7 +23,8 @@ export function task(done) {
     }))
     .pipe(jsonlint())
     .pipe(jsonlint.reporter(helper.reportError))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

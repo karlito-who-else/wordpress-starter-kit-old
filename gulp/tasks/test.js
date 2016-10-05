@@ -1,7 +1,9 @@
 'use strict';
 
-import gulp from 'gulp';
-import wct from 'web-component-tester';
+// import gulp from 'gulp';
+import notify from 'gulp-notify';
+// import wct from 'web-component-tester';
+import {test as wct} from 'web-component-tester';
 
 import * as config from '../config';
 import * as helper from '../helper';
@@ -14,15 +16,21 @@ let sourceFiles = [
 sourceFiles = sourceFiles.concat(config.files.source.elements);
 
 export function task(done) {
-  wct.gulp.init(gulp);
+  // wct.gulp.init(gulp);
+  return wct({plugins: {local: {}, sauce: false}}, function(error) {
+    if (error) {
+      helper.reportError(error);
+      done();
+    } else {
+      notify({'title': 'Build passed', 'message': 'Yay!'});
+      done();
+    }
+  });
 }
 
 export function watch(done) {
   return helper.defineWatcher(namespace, sourceFiles, task);
 }
-
-// Load tasks for web-component-tester
-// Adds tasks for `gulp test:local` and `gulp test:remote`
 
 task.displayName = namespace;
 task.description = 'Test web components using Web Components Tester';

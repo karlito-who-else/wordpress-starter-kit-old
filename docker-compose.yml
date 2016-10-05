@@ -8,8 +8,6 @@ services:
       - npm
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
     links:
       - npm
     volumes_from:
@@ -20,9 +18,6 @@ services:
       dockerfile: Dockerfile.composer
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
-    image: composer/composer:latest
   db:
     # build:
       # args:
@@ -32,15 +27,13 @@ services:
       # dockerfile: Dockerfile.db
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
     expose:
-      - "3306"
+      - 3306
     image: mysql:latest
     networks:
       - back
     ports:
-      - "3306:3306"
+      - 3306:3306
     restart: always
     volumes:
       - "./.data/db:/var/lib/mysql"
@@ -50,8 +43,6 @@ services:
       dockerfile: Dockerfile.gulp
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
     links:
       - bower
       - npm
@@ -67,8 +58,6 @@ services:
       - composer
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
   wordpress:
     # build:
       # context: .
@@ -77,8 +66,8 @@ services:
       - db
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
+    expose:
+      - 80
     image: wordpress:latest
     links:
       - bower
@@ -91,7 +80,7 @@ services:
       - back
       - front
     ports:
-      - "8888:80"
+      - 8888:80
     restart: always
     volumes_from:
       - bower
@@ -110,8 +99,6 @@ services:
       dockerfile: Dockerfile.wp-cli
     env_file:
       - env-common.env
-    environment:
-      SYSTEM_USER: ${SYSTEM_USER}
     working_dir: /home/wordpress/app
 networks:
   front:

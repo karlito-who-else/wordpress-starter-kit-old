@@ -19,6 +19,8 @@
 	"trailing": true,
 	"smarttabs": true,
 	"globals": {
+		"$": true,
+		"importScripts": true,
 		"Phaser": true,
 		"Polymer": true
 	}

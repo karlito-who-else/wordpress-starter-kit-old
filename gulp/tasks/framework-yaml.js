@@ -21,7 +21,8 @@ export function task(done) {
       title: namespace
     }))
     .pipe(yamlvalidate())
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

@@ -52,7 +52,8 @@ export function task(done) {
     // .pipe(remember(namespace))
     .pipe(gulp.dest(config.directory.destination.markup))
     .pipe(size({title: namespace}))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

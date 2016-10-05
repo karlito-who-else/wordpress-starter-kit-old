@@ -20,7 +20,8 @@ export function task(done) {
     }))
     .pipe(gulp.symlink(config.directory.source.base))
     .pipe(gulp.symlink(config.directory.destination.base))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

@@ -34,7 +34,8 @@ export function task(done) {
     //   allowimportmodule: true,
     //   target: 'ES6'
     // }))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

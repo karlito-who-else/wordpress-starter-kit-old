@@ -12,17 +12,23 @@ const namespace = helper.getNamespace(__filename);
 export const tasklist = gulp.parallel(
   tasks.fonts,
   tasks.images,
-  tasks.locales,
+  // tasks.locales,
   tasks.sounds,
-  tasks.videos
+  tasks.videos,
+  function(done) {
+    done();
+  }
 );
 
 export const watch = gulp.parallel(
   tasksWatch.fonts,
   tasksWatch.images,
-  tasksWatch.locales,
+  // tasksWatch.locales,
   tasksWatch.sounds,
-  tasksWatch.videos
+  tasksWatch.videos,
+  function(done) {
+    done();
+  }
 );
 
 tasklist.displayName = namespace;

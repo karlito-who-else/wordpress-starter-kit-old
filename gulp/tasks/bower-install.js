@@ -16,7 +16,10 @@ export function task(done) {
       cmd: 'install',
       verbosity: 1
     })
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
+  } else {
+    done();
   }
 
 }

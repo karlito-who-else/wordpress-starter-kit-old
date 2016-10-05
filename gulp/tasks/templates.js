@@ -31,7 +31,8 @@ export function task(done) {
     .pipe(gulp.dest(config.directory.destination.templates))
     .pipe(remember('templates'))
     .pipe(size({title: 'templates'}))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

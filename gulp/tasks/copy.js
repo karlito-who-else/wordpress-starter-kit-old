@@ -31,7 +31,8 @@ export function task(done) {
       title: namespace
     }))
     .pipe(gulp.dest(config.directory.destination.base))
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function watch(done) {

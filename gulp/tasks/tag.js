@@ -33,7 +33,8 @@ function increment(importance) {
     .pipe(filter('package.json'))
     // create tag in the repository
     .pipe(tagVersion())
-    .on('error', helper.reportError);
+    .on('error', helper.reportError)
+    .on('end', done);
 }
 
 export function task(done) {

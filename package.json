@@ -50,6 +50,7 @@
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
     "browser-sync": "^2.17.0",
     "bs-html-injector": "^3.0.3",
     "check-pages": "^0.10.0",
@@ -60,10 +61,10 @@
     "csswring": "^5.1.0",
     "del": "^2.2.2",
     "doiuse": "^2.5.0",
-    "eslint": "^3.7.0",
+    "eslint": "^3.7.1",
     "fluent-ffmpeg": "^2.1.0",
     "glob-all": "^3.1.0",
-    "gulp": "^3.9.1",
+    "gulp": "gulpjs/gulp.git#4.0",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-babel": "^6.1.2",
     "gulp-bower": "0.0.13",
@@ -73,7 +74,7 @@
     "gulp-csscomb": "^3.0.8",
     "gulp-csslint": "^1.0.0",
     "gulp-debug": "^2.1.2",
-    "gulp-dss": "^0.1.1",
+    "gulp-dss": "github:dsswg/gulp-dss",
     "gulp-eslint": "^3.0.1",
     "gulp-filter": "^4.0.0",
     "gulp-flatmap": "^1.0.0",
@@ -107,7 +108,7 @@
     "imagemin-optipng": "^5.2.1",
     "imagemin-pngquant": "^5.0.0",
     "istanbul": "^0.4.5",
-    "jsdoc": "^3.4.0",
+    "jsdoc": "^3.4.2",
     "jshint-stylish": "^2.2.1",
     "manifoldjs": "^0.7.0",
     "mocha": "^3.1.0",
@@ -117,6 +118,7 @@
     "translate-json-object": "^2.0.1",
     "universal-analytics": "^0.4.6",
     "vorlon": "^0.3.0",
+    "web-component-tester": "^4.3.4",
     "yargs": "^6.0.0"
   },
   "scripts": {
@@ -156,7 +158,7 @@
       "key": "no-key-setup-yet"
     },
     "directory": {
-      "theme": "/wp-content/themes/wordpress-starter-kit"
+      "theme": "wp-content/themes/wordpress-starter-kit"
     },
     "vorlon": {
       "ui": {

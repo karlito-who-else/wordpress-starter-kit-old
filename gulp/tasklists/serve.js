@@ -10,7 +10,10 @@ import * as tasksWatch from '../task-watch';
 const namespace = helper.getNamespace(__filename);
 
 export const tasklist = gulp.parallel(
-  tasks.browserSync
+  tasks.browserSync,
+  function(done) {
+    done();
+  }
 );
 
 tasklist.displayName = namespace;

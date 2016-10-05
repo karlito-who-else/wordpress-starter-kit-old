@@ -23,11 +23,14 @@ export const tasklist = gulp.series(
   gulp.parallel(
     tasks.test,
     tasks.documentation,
-    tasks.styleguide,
-    tasks.screenshots,
-    tasks.scraper,
-    tasks.pagespeed
-  )
+    tasks.styleguide
+    // tasks.screenshots,
+    // tasks.scraper,
+    // tasks.pagespeed
+  ),
+  function(done) {
+    done();
+  }
 );
 
 export const watch = gulp.series(
@@ -38,11 +41,14 @@ export const watch = gulp.series(
   gulp.parallel(
     tasksWatch.test,
     tasksWatch.documentation,
-    tasksWatch.styleguide,
-    tasksWatch.screenshots,
-    tasksWatch.scraper,
-    tasksWatch.pagespeed
-  )
+    tasksWatch.styleguide
+    // tasksWatch.screenshots,
+    // tasksWatch.scraper,
+    // tasksWatch.pagespeed
+  ),
+  function(done) {
+    done();
+  }
 );
 
 tasklist.displayName = namespace;
