@@ -17,3 +17,4 @@ scss-lint-report.xml
 uploads/*
 www/*
 /.data
+/app/wp-content/themes/wordpress-starter-kit/scripts/documentation
