@@ -1,0 +1,36 @@
+{
+  "opts": {
+    "destination": "./app/wp-content/themes/wordpress-starter-kit/scripts/documentation",
+    "encoding": "utf8",
+    "private": true,
+    "recurse": true,
+    "template": "./node_modules/ink-docstrap/template"
+  },
+  "plugins": [],
+  "source": {
+    "exclude": [
+      "bower_components",
+      "documentation",
+      "node_modules"
+    ],
+    "include": ["./app"],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": true,
+    "systemName": "NAFIDAS",
+    "footer": "Created by Wordpress Starter Kit",
+    "copyright": "2013",
+    "navType": "vertical",
+    "theme": "spacelab",
+    "linenums": true,
+    "collapseSymbols": true,
+    "inverseNav": false
+  }
+}

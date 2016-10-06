@@ -11,7 +11,7 @@ const namespace = helper.getNamespace(__filename);
 let sourceFiles = config.files.source.scripts;
 
 export function task(done) {
-  return run('./node_modules/.bin/jsdoc -c ./jsdoc.json')
+  return run('./node_modules/.bin/jsdoc -c ./conf.json')
     .exec()
     .pipe(debug({
       title: namespace

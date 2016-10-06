@@ -8,7 +8,7 @@ RUN curl -0 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 RUN chmod +x /usr/local/bin/wp
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
 USER $SYSTEM_USER
 

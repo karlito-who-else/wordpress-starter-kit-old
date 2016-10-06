@@ -89,6 +89,7 @@ files.source.scripts = [
 files.source.scriptsIgnored = [
   `${directory.source.bowerComponents}`,
   // `${directory.source.nodeModules}/**/*.js`,
+  `${directory.source.scripts}/documentation/**/*.js`,
   `${directory.source.scripts}/color-scheme-control.js`,
   `${directory.source.scripts}/customizer.js`,
   `${directory.source.scripts}/navigation.js`,

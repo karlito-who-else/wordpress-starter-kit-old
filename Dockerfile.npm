@@ -8,7 +8,7 @@ ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_a
 
 RUN chmod +x /usr/local/bin/dumb-init
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
 USER $SYSTEM_USER
 

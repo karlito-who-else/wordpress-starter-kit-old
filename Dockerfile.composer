@@ -4,7 +4,7 @@ MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
 ENV SYSTEM_USER ${SYSTEM_USER:-docker}
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
 RUN chown -R $SYSTEM_USER:$SYSTEM_USER /composer
 

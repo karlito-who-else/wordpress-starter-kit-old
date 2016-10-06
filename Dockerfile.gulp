@@ -4,13 +4,15 @@ MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
 ENV SYSTEM_USER ${SYSTEM_USER:-docker}
 
+ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
+
 ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
 RUN chmod +x /usr/local/bin/dumb-init
 
 RUN npm install -g gulp-cli --quiet
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
 USER $SYSTEM_USER
 
@@ -33,5 +35,17 @@ COPY *.yml ./
 COPY gulp/ ./gulp/
 
 COPY ./app/ ./app/
+
+USER root
+
+RUN chown -R $SYSTEM_USER:$SYSTEM_USER .
+
+RUN if [ ! "$THEME_NAME" = "wordpress-starter-kit" ]; then mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /home/$SYSTEM_USER/app/wp-content/themes/$THEME_NAME; fi
+
+#RUN ls -lai app
+
+RUN find /home/$SYSTEM_USER/app -type f ! -path "/home/$SYSTEM_USER/node_modules" ! -path "/home/$SYSTEM_USER/app/bower_components" ! -path "/home/$SYSTEM_USER/app/node_modules" -exec sed -i 's/$$THEME_NAME/$THEME_NAME/g' {} +
+
+USER $SYSTEM_USER
 
 CMD ["dumb-init", "gulp", "default"]

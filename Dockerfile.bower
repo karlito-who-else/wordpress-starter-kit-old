@@ -10,7 +10,7 @@ RUN chmod +x /usr/local/bin/dumb-init
 
 RUN npm install -g bower --quiet
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
 USER $SYSTEM_USER
 
