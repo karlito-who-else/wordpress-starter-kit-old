@@ -2,27 +2,37 @@ FROM node:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
+#ARG SYSTEM_USER
+
 ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+
+#ARG THEME_NAME
 
 ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
 
-ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+#ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
-RUN chmod +x /usr/local/bin/dumb-init
+#RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-RUN npm install -g gulp-cli --quiet
+#ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
+
+RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
 RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
-USER $SYSTEM_USER
+RUN ["npm", "install", "-g", "gulp-cli", "--quiet"]
 
-RUN mkdir -p /home/$SYSTEM_USER/app
+#USER $SYSTEM_USER
+
+#RUN mkdir -p /home/$SYSTEM_USER/app
 
 WORKDIR /home/$SYSTEM_USER
 
-ADD package.json package.json
+#ADD package.json package.json
 
-RUN npm install --only=dev --quiet
+#RUN npm install --only=dev --quiet
 
 COPY .* ./
 
@@ -32,20 +42,15 @@ COPY *.json ./
 
 COPY *.yml ./
 
-COPY gulp/ ./gulp/
+#COPY gulp/ ./gulp/
 
-COPY ./app/ ./app/
-
-USER root
-
-RUN chown -R $SYSTEM_USER:$SYSTEM_USER .
-
-RUN if [ ! "$THEME_NAME" = "wordpress-starter-kit" ]; then mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /home/$SYSTEM_USER/app/wp-content/themes/$THEME_NAME; fi
-
-#RUN ls -lai app
+#COPY ./app/ ./app/
 
 RUN find /home/$SYSTEM_USER/app -type f ! -path "/home/$SYSTEM_USER/node_modules" ! -path "/home/$SYSTEM_USER/app/bower_components" ! -path "/home/$SYSTEM_USER/app/node_modules" -exec sed -i 's/$$THEME_NAME/$THEME_NAME/g' {} +
 
-USER $SYSTEM_USER
+#RUN if [ ! "$THEME_NAME" = "wordpress-starter-kit" ]; then mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /home/$SYSTEM_USER/app/wp-content/themes/$THEME_NAME; fi
+mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /var/www/html/wp-content/themes/$THEME_NAME
 
-CMD ["dumb-init", "gulp", "default"]
+#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/
+
+CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "gulp", "default"]

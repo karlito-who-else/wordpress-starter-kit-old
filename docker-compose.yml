@@ -4,20 +4,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.bower
-    depends_on:
-      - npm
     env_file:
       - env-common.env
-    links:
-      - npm
-    volumes_from:
-      - npm
+    volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
   composer:
     build:
       context: .
       dockerfile: Dockerfile.composer
     env_file:
       - env-common.env
+    volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
   db:
     # build:
       # args:
@@ -45,19 +45,32 @@ services:
       - env-common.env
     links:
       - bower
-      - npm
+      - npm-development
+    volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
+      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
     volumes_from:
       - bower
-      - npm
       - wp-cli
-  npm:
+  npm-development:
     build:
       context: .
-      dockerfile: Dockerfile.npm
-    depends_on:
-      - composer
+      dockerfile: Dockerfile.npm-development
     env_file:
       - env-common.env
+    volumes:
+      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
+  npm-production:
+    build:
+      context: .
+      dockerfile: Dockerfile.npm-production
+    env_file:
+      - env-common.env
+    volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
+      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
   wordpress:
     # build:
       # context: .
@@ -66,40 +79,44 @@ services:
       - db
     env_file:
       - env-common.env
-    expose:
-      - 80
+    # expose:
+    #   - 80
     image: wordpress:latest
     links:
       - bower
       - composer
       - db
       - gulp
-      - npm
+      - npm-production
       - wp-cli
     networks:
       - back
       - front
     ports:
-      - 8888:80
+      - "8000:80"
     restart: always
     volumes_from:
       - bower
       - composer
       - gulp
-      - npm
+      - npm-production
       - wp-cli
     volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
       - "./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
-      - "./.data/uploads:/home/wordpress/uploads"
-      # - "./app:/var/www/html"
-    working_dir: /home/wordpress/app
+      - "./.data/uploads:/home/${SYSTEM_USER}/uploads"
+    #working_dir: "/home/${SYSTEM_USER}/app"
   wp-cli:
     build:
       context: .
       dockerfile: Dockerfile.wp-cli
     env_file:
       - env-common.env
-    working_dir: /home/wordpress/app
+    volumes:
+      - "app:/home/${SYSTEM_USER}/app"
+      - "html:/var/www/html"
+    working_dir: "/home/${SYSTEM_USER}/app"
 networks:
   front:
     driver: bridge
@@ -107,9 +124,13 @@ networks:
   back:
     driver: bridge
 volumes:
+  app:
+    driver: local
   bower-components:
     driver: local
   db-data:
+    driver: local
+  html:
     driver: local
   npm-modules:
     driver: local

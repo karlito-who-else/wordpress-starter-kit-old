@@ -18,20 +18,13 @@ RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
 RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
-RUN ["npm", "install", "-g", "bower", "--quiet"]
-
 #USER $SYSTEM_USER
 
-#RUN mkdir -p /home/$SYSTEM_USER/app
+WORKDIR /home/$SYSTEM_USER
 
-#WORKDIR /home/$SYSTEM_USER/app
+ADD package.json package.json
 
-WORKDIR /var/www/html/
+#RUN ["npm", "install", "--only=development", "--quiet"]
+CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "npm", "install", "--only=development", "--quiet"]
 
-COPY bower.json bower.json
-
-#RUN ["chown", "-R", "$SYSTEM_USER:$SYSTEM_USER", "/home/$SYSTEM_USER/"]
-
-#RUN ["chown", "-R", "$SYSTEM_USER:$SYSTEM_USER", "/var/www/html"]
-
-CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "bower", "install", "--quiet"]
+#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/

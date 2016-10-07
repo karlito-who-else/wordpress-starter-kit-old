@@ -18,20 +18,22 @@ RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
 RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
 
-RUN ["npm", "install", "-g", "bower", "--quiet"]
-
 #USER $SYSTEM_USER
 
-#RUN mkdir -p /home/$SYSTEM_USER/app
+RUN mkdir -p /home/$SYSTEM_USER
 
-#WORKDIR /home/$SYSTEM_USER/app
+WORKDIR /home/$SYSTEM_USER
 
-WORKDIR /var/www/html/
+ADD package.json package.json
 
-COPY bower.json bower.json
+#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/
 
-#RUN ["chown", "-R", "$SYSTEM_USER:$SYSTEM_USER", "/home/$SYSTEM_USER/"]
+RUN ["npm", "install", "--only=production", "--quiet"]
+#CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "npm", "install", "--only=production"]
 
-#RUN ["chown", "-R", "$SYSTEM_USER:$SYSTEM_USER", "/var/www/html"]
+#RUN mkdir -p /var/www/html/
 
-CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "bower", "install", "--quiet"]
+#RUN ["ls", "-lai"]
+
+#RUN ["cp", "-a", "./node_modules", "./app/node_modules"]
+CMD ["cp", "-a", "/home/$SYSTEM_USER/node_modules", "/var/www/html/node_modules"]
