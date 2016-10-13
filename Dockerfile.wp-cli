@@ -1,40 +1,41 @@
-FROM node:latest
+FROM wordpress:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
-#ARG SYSTEM_USER
+ARG SYSTEM_USER=wordpress
 
-ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+#ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
 
-ARG THEME_NAME
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
-ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
+RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-#ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
-
-#RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
-
-#ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
+
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
 RUN curl -0 https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp
 
 RUN ["chmod", "+x", "/usr/local/bin/wp"]
 
-#USER $SYSTEM_USER
+RUN mkdir -p /var/www/html
 
-#RUN mkdir -p /home/$SYSTEM_USER/app
-
-#WORKDIR /home/$SYSTEM_USER/app
 WORKDIR /var/www/html
 
-#RUN ["chown" "-R" "$SYSTEM_USER:$SYSTEM_USER" "/home/$SYSTEM_USER/"]
+RUN ls -lai /var/www/html
 
-CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "wp", "theme", "activate", "$THEME_NAME"]
+RUN gosu $SYSTEM_USER wp scaffold _s $THEME_SLUG --theme_name="$THEME_NAME" --author="$AUTHOR_NAME" --author_uri="$AUTHOR_URI"
 
-#CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "wp", "help"]
+#RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "theme", "install", "$THEME_NAME"]
+
+#RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "scaffold", "_s", "$THEME_SLUG", "--theme_name=\"$THEME_NAME\"", "--author=\"$AUTHOR_NAME\"", "--author_uri=\"$AUTHOR_URI\""]
+
+#RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "theme", "activate", "$THEME_SLUG"]
+
+ENTRYPOINT ["wp"]

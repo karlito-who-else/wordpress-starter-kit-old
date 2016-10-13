@@ -2,37 +2,31 @@ FROM node:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
-#ARG SYSTEM_USER
+ARG SYSTEM_USER=wordpress
 
-ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+#ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
 
-#ARG THEME_NAME
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
-ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
+RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-#ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
-
-#RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
-
-#ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
+
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
 RUN ["npm", "install", "-g", "gulp-cli", "--quiet"]
 
-#USER $SYSTEM_USER
+RUN mkdir -p /home/$SYSTEM_USER/build
 
-#RUN mkdir -p /home/$SYSTEM_USER/app
+RUN mkdir -p /var/www/html
 
-WORKDIR /home/$SYSTEM_USER
-
-#ADD package.json package.json
-
-#RUN npm install --only=dev --quiet
+WORKDIR /home/$SYSTEM_USER/build
 
 COPY .* ./
 
@@ -42,15 +36,8 @@ COPY *.json ./
 
 COPY *.yml ./
 
-#COPY gulp/ ./gulp/
+#RUN find /home/$SYSTEM_USER/build/app -type f ! -path "/home/$SYSTEM_USER/build/node_modules" ! -path "/home/$SYSTEM_USER/build/app/bower_components" ! -path "/home/$SYSTEM_USER/build/app/node_modules" -exec sed -i 's/$$THEME_NAME/$THEME_NAME/g' {} +
 
-#COPY ./app/ ./app/
-
-RUN find /home/$SYSTEM_USER/app -type f ! -path "/home/$SYSTEM_USER/node_modules" ! -path "/home/$SYSTEM_USER/app/bower_components" ! -path "/home/$SYSTEM_USER/app/node_modules" -exec sed -i 's/$$THEME_NAME/$THEME_NAME/g' {} +
-
-#RUN if [ ! "$THEME_NAME" = "wordpress-starter-kit" ]; then mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /home/$SYSTEM_USER/app/wp-content/themes/$THEME_NAME; fi
-mv /home/$SYSTEM_USER/app/wp-content/themes/wordpress-starter-kit /var/www/html/wp-content/themes/$THEME_NAME
-
-#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/
+#mv /home/$SYSTEM_USER/build/app/wp-content/themes/wordpress-starter-kit /var/www/html/wp-content/themes/$THEME_NAME
 
 CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "gulp", "default"]

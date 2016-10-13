@@ -2,36 +2,28 @@ FROM composer/composer:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
-#ARG SYSTEM_USER
+ARG SYSTEM_USER=wordpress
 
-ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
-#ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-#RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
-
-#ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
 
-#USER $SYSTEM_USER
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
-#RUN mkdir -p /home/$SYSTEM_USER/app
+RUN mkdir -p /var/www/html
 
-#WORKDIR /home/$SYSTEM_USER/app
+WORKDIR /var/www/html
 
-WORKDIR /var/www/html/
+COPY composer.json composer.json
 
-#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /composer
-
-ADD composer.json composer.json
-
-ADD composer.lock composer.lock
-
-#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/
+COPY composer.lock composer.lock
 
 CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "composer", "install", "--quiet"]

@@ -2,29 +2,26 @@ FROM node:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
-#ARG SYSTEM_USER
+ARG SYSTEM_USER=wordpress
 
-ENV SYSTEM_USER ${SYSTEM_USER:-docker}
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
 
-#ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-#RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
-
-#ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN groupadd -r $SYSTEM_USER && useradd -m -r -g $SYSTEM_USER $SYSTEM_USER
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
 
-#USER $SYSTEM_USER
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
-WORKDIR /home/$SYSTEM_USER
+RUN mkdir -p /home/$SYSTEM_USER/build
 
-ADD package.json package.json
+WORKDIR /home/$SYSTEM_USER/build
 
-#RUN ["npm", "install", "--only=development", "--quiet"]
+COPY package.json package.json
+
 CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "npm", "install", "--only=development", "--quiet"]
-
-#RUN chown -R $SYSTEM_USER:$SYSTEM_USER /home/$SYSTEM_USER/

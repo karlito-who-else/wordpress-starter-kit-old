@@ -1,4 +1,4 @@
-FROM node:latest
+FROM alpine:3.3
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
@@ -14,18 +14,27 @@ ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gos
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then addgroup $SYSTEM_USER; fi
 
-RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then adduser -D -G $SYSTEM_USER $SYSTEM_USER; fi
 
-RUN ["npm", "install", "-g", "bower", "--quiet"]
-
+#RUN mkdir -p /home/$SYSTEM_USER/build
 RUN mkdir -p /var/www/html
 
+#WORKDIR /home/$SYSTEM_USER/build
 WORKDIR /var/www/html
+
+RUN apk add --update curl && apk --update add tar && \
+    rm -rf /var/cache/apk/*
+
+#RUN ["npm", "install", "-g", "yarn", "--quiet"]
+
+RUN curl -o- -L https://yarnpkg.com/install.sh | sh
 
 COPY bower.json bower.json
 
+COPY package.json package.json
+
 COPY yarn.lock yarn.lock
 
-CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "bower", "install", "--quiet"]
+CMD ["gosu", "$SYSTEM_USER", "yarn"]

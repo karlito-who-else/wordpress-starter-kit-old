@@ -6,8 +6,10 @@ services:
       dockerfile: Dockerfile.bower
     env_file:
       - env-common.env
+    # volumes_from:
+    #     - app
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
+      - "build:/home/${SYSTEM_USER}/build"
       - "html:/var/www/html"
   composer:
     build:
@@ -15,9 +17,13 @@ services:
       dockerfile: Dockerfile.composer
     env_file:
       - env-common.env
+    image: composer/composer:latest
+    # volumes_from:
+    #     - app
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
+      - "build:/home/${SYSTEM_USER}/build"
       - "html:/var/www/html"
+    working_dir: /var/www/html
   db:
     # build:
       # args:
@@ -41,82 +47,98 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.gulp
-    env_file:
-      - env-common.env
-    links:
+    depends_on:
       - bower
       - npm-development
+    env_file:
+      - env-common.env
+    # volumes_from:
+    #     - app
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
+      - "build:/home/${SYSTEM_USER}/build"
       - "html:/var/www/html"
-      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
-    volumes_from:
-      - bower
-      - wp-cli
+    # volumes_from:
+    #   - bower
+    #   - npm-development
   npm-development:
     build:
       context: .
       dockerfile: Dockerfile.npm-development
     env_file:
       - env-common.env
+    # volumes_from:
+    #     - app
     volumes:
-      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
+      - "build:/home/${SYSTEM_USER}/build"
+      - "html:/var/www/html"
   npm-production:
     build:
       context: .
       dockerfile: Dockerfile.npm-production
     env_file:
       - env-common.env
+    # volumes_from:
+    #     - app
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
+      - "build:/home/${SYSTEM_USER}/build"
       - "html:/var/www/html"
-      - "npm-modules:/home/${SYSTEM_USER}/node_modules"
   wordpress:
-    # build:
-      # context: .
-      # dockerfile: Dockerfile.wordpress
     depends_on:
-      - db
-    env_file:
-      - env-common.env
-    # expose:
-    #   - 80
-    image: wordpress:latest
-    links:
       - bower
       - composer
       - db
       - gulp
       - npm-production
-      - wp-cli
+    env_file:
+      - env-common.env
+    image: wordpress:latest
     networks:
       - back
       - front
     ports:
       - "8000:80"
     restart: always
-    volumes_from:
-      - bower
-      - composer
-      - gulp
-      - npm-production
-      - wp-cli
+    # volumes_from:
+    #   - app
+    #   - bower
+    #   - composer
+    #   - gulp
+    #   - npm-production
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
-      - "html:/var/www/html"
-      - "./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
-      - "./.data/uploads:/home/${SYSTEM_USER}/uploads"
-    #working_dir: "/home/${SYSTEM_USER}/app"
+      - build:/home/${SYSTEM_USER}/build
+      - html:/var/www/html
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./.data/uploads:/home/${SYSTEM_USER}/uploads
+    # working_dir: "/home/${SYSTEM_USER}/app"
   wp-cli:
     build:
+      args:
+        - AUTHOR_NAME=Karl Podger
+        - AUTHOR_URI=https://www.primeordinal.com/
+        - SYSTEM_USER=wordpress
+        - THEME_NAME=Super Awesome
+        - THEME_SLUG=superawesome
       context: .
       dockerfile: Dockerfile.wp-cli
+    depends_on:
+      - wordpress
+    env_file:
+      - env-common.env
+    volumes_from:
+      - wordpress
+    # volumes:
+    #   - "build:/home/${SYSTEM_USER}/build"
+    #   - "html:/var/www/html"
+    # working_dir: "/home/${SYSTEM_USER}/app"
+  yarn:
+    build:
+      context: .
+      dockerfile: Dockerfile.yarn
     env_file:
       - env-common.env
     volumes:
-      - "app:/home/${SYSTEM_USER}/app"
+      - "build:/home/${SYSTEM_USER}/build"
       - "html:/var/www/html"
-    working_dir: "/home/${SYSTEM_USER}/app"
 networks:
   front:
     driver: bridge
@@ -124,15 +146,7 @@ networks:
   back:
     driver: bridge
 volumes:
-  app:
-    driver: local
-  bower-components:
-    driver: local
-  db-data:
+  build:
     driver: local
   html:
-    driver: local
-  npm-modules:
-    driver: local
-  uploads:
     driver: local
