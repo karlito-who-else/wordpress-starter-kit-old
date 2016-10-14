@@ -8,7 +8,7 @@ ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_a
 
 RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
@@ -18,18 +18,14 @@ RUN if [ ! $(getent group $SYSTEM_USER) ]; then addgroup $SYSTEM_USER; fi
 
 RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then adduser -D -G $SYSTEM_USER $SYSTEM_USER; fi
 
-#RUN mkdir -p /home/$SYSTEM_USER/build
-RUN mkdir -p /var/www/html
+RUN mkdir -p /usr/src/wordpress
 
-#WORKDIR /home/$SYSTEM_USER/build
-WORKDIR /var/www/html
+WORKDIR /usr/src/wordpress
 
 RUN apk add --update curl && apk --update add tar && \
     rm -rf /var/cache/apk/*
 
 #RUN ["npm", "install", "-g", "yarn", "--quiet"]
-
-RUN curl -o- -L https://yarnpkg.com/install.sh | sh
 
 COPY bower.json bower.json
 
@@ -37,4 +33,10 @@ COPY package.json package.json
 
 COPY yarn.lock yarn.lock
 
-CMD ["gosu", "$SYSTEM_USER", "yarn"]
+USER $SYSTEM_USER
+
+RUN curl -o- -L https://yarnpkg.com/install.sh | sh
+
+#CMD ["gosu", "$SYSTEM_USER", "yarn"]
+#CMD gosu $SYSTEM_USER /root/.yarn/bin/yarn
+CMD ~/.yarn/bin/yarn

@@ -10,7 +10,7 @@ ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_a
 
 RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 
@@ -20,13 +20,11 @@ RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
 
 RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
-RUN ["npm", "install", "-g", "gulp-cli", "--quiet"]
+RUN ["npm", "install", "-g", "gulp-cli", "babel-core", "babel-preset-es2015", "--quiet"]
 
-RUN mkdir -p /home/$SYSTEM_USER/build
+RUN mkdir -p /usr/src/wordpress
 
-RUN mkdir -p /var/www/html
-
-WORKDIR /home/$SYSTEM_USER/build
+WORKDIR /usr/src/wordpress
 
 COPY .* ./
 
@@ -38,6 +36,7 @@ COPY *.yml ./
 
 #RUN find /home/$SYSTEM_USER/build/app -type f ! -path "/home/$SYSTEM_USER/build/node_modules" ! -path "/home/$SYSTEM_USER/build/app/bower_components" ! -path "/home/$SYSTEM_USER/build/app/node_modules" -exec sed -i 's/$$THEME_NAME/$THEME_NAME/g' {} +
 
-#mv /home/$SYSTEM_USER/build/app/wp-content/themes/wordpress-starter-kit /var/www/html/wp-content/themes/$THEME_NAME
+#mv /home/$SYSTEM_USER/build/app/wp-content/themes/wordpress-starter-kit /usr/src/wordpress/wp-content/themes/$THEME_NAME
 
-CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "gulp", "default"]
+#CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "gulp", "default"]
+CMD gosu $SYSTEM_USER gulp default

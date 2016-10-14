@@ -8,7 +8,7 @@ ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_a
 
 RUN ["chmod", "+x", "/usr/local/bin/dumb-init"]
 
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 
 ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gosu
 

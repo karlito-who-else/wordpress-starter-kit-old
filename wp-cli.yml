@@ -1,0 +1,12 @@
+# Global parameter defaults
+#path: wp-core
+url: https://wordpress-starter-kit.com
+user: admin
+
+# Subcommand defaults (e.g. `wp core config`)
+core config:
+	dbuser: root
+	dbpass: wordpress
+	extra-php: |
+		define( 'WP_DEBUG', true );
+		#define( 'WP_POST_REVISIONS', 50 );

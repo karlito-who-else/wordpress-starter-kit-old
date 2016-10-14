@@ -1,43 +1,40 @@
 version: '2'
 services:
-  bower:
-    build:
-      context: .
-      dockerfile: Dockerfile.bower
-    env_file:
-      - env-common.env
-    # volumes_from:
-    #     - app
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
+  # bower:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.bower
+    # container_name: bower
+  #   env_file:
+  #     - config.env
+  #   volumes:
+  #     - "build:/home/${SYSTEM_USER}/build"
+  #     - "html:/var/www/html"
   composer:
     build:
       context: .
       dockerfile: Dockerfile.composer
+    container_name: composer
+    depends_on:
+      - wordpress
     env_file:
-      - env-common.env
+      - config.env
     image: composer/composer:latest
-    # volumes_from:
-    #     - app
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
+    volumes_from:
+      - wordpress
+    # volumes:
+    #   - "build:/home/${SYSTEM_USER}/build"
+    #   - "html:/var/www/html"
     working_dir: /var/www/html
   db:
-    # build:
-      # args:
-        # buildno: 1
-        # password: secret
-      # context: .
-      # dockerfile: Dockerfile.db
+    container_name: db
     env_file:
-      - env-common.env
+      - config.env
     expose:
       - 3306
     image: mysql:latest
-    networks:
-      - back
+    # networks:
+    #   - back
     ports:
       - 3306:3306
     restart: always
@@ -47,54 +44,52 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.gulp
+    container_name: gulp
     depends_on:
-      - bower
-      - npm-development
+      # - bower
+      - wordpress
+      - yarn
     env_file:
-      - env-common.env
+      - config.env
     # volumes_from:
-    #     - app
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
-    # volumes_from:
-    #   - bower
-    #   - npm-development
-  npm-development:
-    build:
-      context: .
-      dockerfile: Dockerfile.npm-development
-    env_file:
-      - env-common.env
-    # volumes_from:
-    #     - app
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
-  npm-production:
-    build:
-      context: .
-      dockerfile: Dockerfile.npm-production
-    env_file:
-      - env-common.env
-    # volumes_from:
-    #     - app
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
+      # - bower
+      # - yarn
+    # volumes:
+    #   - "build:/home/${SYSTEM_USER}/build"
+    #   - "html:/var/www/html"
+  # npm-development:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.npm-development
+  #   env_file:
+  #     - config.env
+  #   volumes:
+  #     - "build:/home/${SYSTEM_USER}/build"
+  #     - "html:/var/www/html"
+  # npm-production:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.npm-production
+  #   env_file:
+  #     - config.env
+  #   volumes:
+  #     - "build:/home/${SYSTEM_USER}/build"
+  #     - "html:/var/www/html"
   wordpress:
+    container_name: wordpress
     depends_on:
-      - bower
-      - composer
+      # - bower
+      # - composer
       - db
-      - gulp
-      - npm-production
+      # - gulp
+      # - npm-production
+      # - yarn
     env_file:
-      - env-common.env
+      - config.env
     image: wordpress:latest
-    networks:
-      - back
-      - front
+    # networks:
+    #   - back
+    #   - front
     ports:
       - "8000:80"
     restart: always
@@ -104,11 +99,13 @@ services:
     #   - composer
     #   - gulp
     #   - npm-production
+    #   - yarn
     volumes:
-      - build:/home/${SYSTEM_USER}/build
+      # - build:/home/${SYSTEM_USER}/build
       - html:/var/www/html
+      - src:/usr/src/wordpress
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
-      - ./.data/uploads:/home/${SYSTEM_USER}/uploads
+      - ./.data/uploads:/var/www/html/wp-content/uploads
     # working_dir: "/home/${SYSTEM_USER}/app"
   wp-cli:
     build:
@@ -120,33 +117,43 @@ services:
         - THEME_SLUG=superawesome
       context: .
       dockerfile: Dockerfile.wp-cli
+    container_name: wp-cli
     depends_on:
       - wordpress
     env_file:
-      - env-common.env
+      - config.env
     volumes_from:
       - wordpress
-    # volumes:
-    #   - "build:/home/${SYSTEM_USER}/build"
-    #   - "html:/var/www/html"
-    # working_dir: "/home/${SYSTEM_USER}/app"
+  # wptest:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.wptest
+  #   container_name: wptest
+  #   depends_on:
+  #     - wordpress
+  #     - wp-cli
+  #   env_file:
+  #     - config.env
+  #   volumes_from:
+  #     - wordpress
   yarn:
     build:
       context: .
       dockerfile: Dockerfile.yarn
+    container_name: yarn
+    depends_on:
+      - wordpress
     env_file:
-      - env-common.env
-    volumes:
-      - "build:/home/${SYSTEM_USER}/build"
-      - "html:/var/www/html"
-networks:
-  front:
-    driver: bridge
-    # external: true
-  back:
-    driver: bridge
+      - config.env
+    volumes_from:
+      - wordpress
+# networks:
+#   front:
+#     driver: bridge
+#   back:
+#     driver: bridge
 volumes:
-  build:
-    driver: local
   html:
+    driver: local
+  src:
     driver: local

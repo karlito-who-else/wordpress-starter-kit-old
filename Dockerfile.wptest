@@ -2,11 +2,7 @@ FROM wordpress:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
-ARG AUTHOR_NAME="Wordpress Starter Kit Authors"
-ARG AUTHOR_URI="https://wordpress-starter-kit.com"
-ARG SYSTEM_USER="wordpress"
-ARG THEME_NAME="Wordpress Starter Kit Theme"
-ARG THEME_SLUG="wordpress-starter-kit-theme"
+ARG SYSTEM_USER=wordpress
 
 #ENV THEME_NAME ${THEME_NAME:-wordpress-starter-kit}
 
@@ -32,7 +28,14 @@ RUN mkdir -p /usr/src/wordpress
 
 WORKDIR /usr/src/wordpress
 
-#RUN gosu $SYSTEM_USER wp scaffold _s $THEME_SLUG --theme_name="$THEME_NAME" --author="$AUTHOR_NAME" --author_uri="$AUTHOR_URI"
+#RUN gosu $SYSTEM_USER curl -OL https://raw.githubusercontent.com/manovotny/wptest/master/wptest.xml
+ADD https://raw.githubusercontent.com/manovotny/wptest/master/wptest.xml /usr/src/wordpress/wptest.xml
+
+RUN ls -lai
+
+RUN gosu $SYSTEM_USER wp import wptest.xml --authors=create
+
+RUN gosu $SYSTEM_USER rm wptest.xml
 
 #RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "theme", "install", "$THEME_NAME"]
 
@@ -42,5 +45,4 @@ WORKDIR /usr/src/wordpress
 
 USER $SYSTEM_USER
 
-#ENTRYPOINT ["/usr/local/bin/gosu", "$SYSTEM_USER", "wp"]
 ENTRYPOINT ["wp"]

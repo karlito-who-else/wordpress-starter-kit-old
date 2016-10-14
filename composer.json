@@ -25,29 +25,19 @@
     }
   }],
   "config": {
-    "vendor-dir": "www/vendor",
+    "vendor-dir": "vendor",
     "minimum-stability": "dev"
   },
   "extra": {
-    "wordpress-install-dir": "www",
+    "wordpress-install-dir": "/var/www/html",
     "installer-paths": {
-      "www/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
-      "www/wp-content/themes/{$name}/": ["type:wordpress-theme"]
+      "/var/www/html/wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "/var/www/html/wp-content/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
     }
-  },
-  "scripts": {
-    "pre-install-cmd": [
-      "bash scripts/composer/pre-install.sh"
-    ],
-    "pre-update-cmd": [
-      "bash scripts/composer/pre-update.sh"
-    ],
-    "post-install-cmd": [
-      "bash scripts/composer/post-install.sh"
-    ],
-    "post-update-cmd": [
-      "bash scripts/composer/post-update.sh"
-    ]
   },
   "require": {
     "php": ">=5.6",
