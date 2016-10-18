@@ -8,8 +8,8 @@ services:
   #   env_file:
   #     - config.env
   #   volumes:
-  #     - "build:/home/${SYSTEM_USER}/build"
-  #     - "html:/var/www/html"
+  #     - build:/home/${SYSTEM_USER}/build
+  #     - html:/var/www/html
   composer:
     build:
       context: .
@@ -20,11 +20,13 @@ services:
     env_file:
       - config.env
     image: composer/composer:latest
+    networks:
+      - front
     volumes_from:
       - wordpress
     # volumes:
-    #   - "build:/home/${SYSTEM_USER}/build"
-    #   - "html:/var/www/html"
+    #   - build:/home/${SYSTEM_USER}/build
+    #   - html:/var/www/html
     working_dir: /var/www/html
   db:
     container_name: db
@@ -33,13 +35,13 @@ services:
     expose:
       - 3306
     image: mysql:latest
-    # networks:
-    #   - back
+    networks:
+      - back
     ports:
       - 3306:3306
     restart: always
     volumes:
-      - "./.data/db:/var/lib/mysql"
+      - ./.data/db:/var/lib/mysql
   gulp:
     build:
       context: .
@@ -51,12 +53,16 @@ services:
       - yarn
     env_file:
       - config.env
+    networks:
+      - front
+    volumes_from:
+      - wordpress
     # volumes_from:
       # - bower
       # - yarn
     # volumes:
-    #   - "build:/home/${SYSTEM_USER}/build"
-    #   - "html:/var/www/html"
+    #   - build:/home/${SYSTEM_USER}/build
+    #   - html:/var/www/html
   # npm-development:
   #   build:
   #     context: .
@@ -64,8 +70,8 @@ services:
   #   env_file:
   #     - config.env
   #   volumes:
-  #     - "build:/home/${SYSTEM_USER}/build"
-  #     - "html:/var/www/html"
+  #     - build:/home/${SYSTEM_USER}/build
+  #     - html:/var/www/html
   # npm-production:
   #   build:
   #     context: .
@@ -73,8 +79,8 @@ services:
   #   env_file:
   #     - config.env
   #   volumes:
-  #     - "build:/home/${SYSTEM_USER}/build"
-  #     - "html:/var/www/html"
+  #     - build:/home/${SYSTEM_USER}/build
+  #     - html:/var/www/html
   wordpress:
     container_name: wordpress
     depends_on:
@@ -87,11 +93,11 @@ services:
     env_file:
       - config.env
     image: wordpress:latest
-    # networks:
-    #   - back
-    #   - front
+    networks:
+      - back
+      - front
     ports:
-      - "8000:80"
+      - 8000:80
     restart: always
     # volumes_from:
     #   - app
@@ -102,11 +108,11 @@ services:
     #   - yarn
     volumes:
       # - build:/home/${SYSTEM_USER}/build
-      - html:/var/www/html
-      - src:/usr/src/wordpress
+      - ./.generated/html:/var/www/html
+      - ./.generated/src:/usr/src/wordpress
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./.data/uploads:/var/www/html/wp-content/uploads
-    # working_dir: "/home/${SYSTEM_USER}/app"
+    # working_dir: /home/${SYSTEM_USER}/app
   wp-cli:
     build:
       args:
@@ -122,6 +128,8 @@ services:
       - wordpress
     env_file:
       - config.env
+    networks:
+      - front
     volumes_from:
       - wordpress
   # wptest:
@@ -145,13 +153,15 @@ services:
       - wordpress
     env_file:
       - config.env
+    networks:
+      - front
     volumes_from:
       - wordpress
-# networks:
-#   front:
-#     driver: bridge
-#   back:
-#     driver: bridge
+networks:
+  front:
+    driver: bridge
+  back:
+    driver: bridge
 volumes:
   html:
     driver: local

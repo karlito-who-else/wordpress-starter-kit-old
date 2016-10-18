@@ -1,4 +1,4 @@
-FROM alpine:3.3
+FROM node:latest
 
 MAINTAINER Karl Podger <karl.podger@primeordinal.com>
 
@@ -14,18 +14,22 @@ ADD https://github.com/tianon/gosu/releases/download/1.0/gosu /usr/local/bin/gos
 
 RUN ["chmod", "+x", "/usr/local/bin/gosu"]
 
-RUN if [ ! $(getent group $SYSTEM_USER) ]; then addgroup $SYSTEM_USER; fi
+RUN if [ ! $(getent group $SYSTEM_USER) ]; then groupadd -r $SYSTEM_USER; fi
 
-RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then adduser -D -G $SYSTEM_USER $SYSTEM_USER; fi
+RUN if [ ! $(getent passwd $SYSTEM_USER) ]; then useradd -m -r -g $SYSTEM_USER $SYSTEM_USER; fi
 
-RUN mkdir -p /usr/src/wordpress
+RUN apt-get update && apt-get install tar \
+ && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/wordpress
+RUN mkdir -p /opt/yarn
 
-RUN apk add --update curl && apk --update add tar && \
-    rm -rf /var/cache/apk/*
+RUN curl -L https://yarnpkg.com/latest.tar.gz | tar -zxf - -C /opt/yarn
 
-#RUN ["npm", "install", "-g", "yarn", "--quiet"]
+ENV PATH /opt/yarn/dist/bin:$PATH
+
+RUN mkdir -p /home/$SYSTEM_USER/build
+
+WORKDIR /home/$SYSTEM_USER/build
 
 COPY bower.json bower.json
 
@@ -33,10 +37,18 @@ COPY package.json package.json
 
 COPY yarn.lock yarn.lock
 
-USER $SYSTEM_USER
-
-RUN curl -o- -L https://yarnpkg.com/install.sh | sh
-
+#RUN gosu $SYSTEM_USER yarn
+RUN yarn
+#CMD yarn
+#CMD ["yarn"]
 #CMD ["gosu", "$SYSTEM_USER", "yarn"]
-#CMD gosu $SYSTEM_USER /root/.yarn/bin/yarn
-CMD ~/.yarn/bin/yarn
+
+RUN ls -lai
+
+RUN mkdir -p /var/www/html/
+
+RUN mkdir -p /usr/src/wordpress
+
+#CMD ["cp", "-a", "/home/$SYSTEM_USER/build/node_modules", "/var/www/html/node_modules"]
+#CMD cp -a /home/$SYSTEM_USER/build/node_modules /var/www/html/node_modules
+CMD cp -a /home/$SYSTEM_USER/build/node_modules /usr/src/wordpress
