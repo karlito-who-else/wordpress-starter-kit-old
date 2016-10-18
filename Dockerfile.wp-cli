@@ -32,6 +32,8 @@ RUN mkdir -p /usr/src/wordpress
 
 WORKDIR /usr/src/wordpress
 
+USER $SYSTEM_USER
+
 #RUN gosu $SYSTEM_USER wp scaffold _s $THEME_SLUG --theme_name="$THEME_NAME" --author="$AUTHOR_NAME" --author_uri="$AUTHOR_URI"
 
 #RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "theme", "install", "$THEME_NAME"]
@@ -39,8 +41,8 @@ WORKDIR /usr/src/wordpress
 #RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "scaffold", "_s", "$THEME_SLUG", "--theme_name=\"$THEME_NAME\"", "--author=\"$AUTHOR_NAME\"", "--author_uri=\"$AUTHOR_URI\""]
 
 #RUN ["/usr/local/bin/gosu", "$SYSTEM_USER", "/usr/local/bin/wp", "theme", "activate", "$THEME_SLUG"]
+#RUN ls -lai
+#RUN wp scaffold _s $THEME_SLUG --theme_name="$THEME_NAME" --author="$AUTHOR_NAME" --author_uri="$AUTHOR_URI"
 
-USER $SYSTEM_USER
-
-#ENTRYPOINT ["/usr/local/bin/gosu", "$SYSTEM_USER", "wp"]
-ENTRYPOINT ["wp"]
+#CMD ["/usr/local/bin/gosu", "$SYSTEM_USER", "wp"]
+CMD ["wp"]
